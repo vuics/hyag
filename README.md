@@ -167,7 +167,7 @@ docker-compose up
 | `ollama`   | Ollama LLM service             |
 | `chroma`   | Chroma vector DB               |
 
-📜 Full list in [`docker-compose.yml`](./docker-compose.yml)
+📜 Full list in [`docker-compose.yml`](https://github.com/vuics/hyag/blob/main/docker-compose.yml)
 
 ---
 
