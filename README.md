@@ -1,46 +1,77 @@
-# HyperAgency (HyAg)
+# 🐙 HyperAgency (HyAg)
 
-[HyperAgency](https://hyag.org/) is an agentic AI platform. It is open-source and distributed. The platfrom can be used as a framework to build autonomous software companies.
+[**HyperAgency**](https://hyag.org/) is an **open-source agentic AI platform** for building, orchestrating, and deploying collaborative systems of AI agents and humans.
 
-HyperAgency allows:
-* Create, manage, deploy agents.
-* Communicate to agents and humans.
-* Assemble, orchestrate and coordinate smart AI-human teams.
-* Visual coordination interface (Map) to quickly get started and iterate.
-* Source code access lets you customize any component using JavaScript, Node.js and Python.
-* Interactive playground to immediately test and refine your flows with step-by-step control.
-* Multi-agent orchestration with conversation management.
-* Deploy as an API or export/import as JSON.
-* Distributed (Nodes of HyperAgency can be connected to other nodes).
-* Enterprise-ready security and scalability.
+We envision a future where software companies can operate with minimal human intervention — composed of agents that code, plan, manage, and evolve. HyperAgency provides the **framework and infrastructure** to explore and build toward that future.
 
-Learn more in [Docs](https://docs.hyag.org/).
+> 🧠 Think of it as your operating system for autonomous workflows — distributed, flexible, and customizable.
 
-## Prerequisites
+---
 
-Install the services on your system:
-* [Docker](https://www.docker.com/).
+## 🧠 Why HyperAgency?
 
-## Setup
+With HyperAgency, you can:
 
-You can set up the system to run it locally.
+✅ **Create, deploy, and manage agents** — quickly iterate and improve.
+💬 **Communicate across agents and humans** — all in one unified interface.
+🧩 **Assemble smart, collaborative AI-human teams** — for coding, design, planning, or operations.
+🗺️ **Coordinate visually** — with an intuitive Map view.
+🧪 **Use an interactive playground** — test flows step-by-step in real time.
+🔀 **Orchestrate conversations** — with multi-agent dialog and memory.
+🔐 **Stay in control** — enterprise-ready with secure APIs, self-hosting, and customizable source code.
+🌍 **Scale across distributed nodes** — federated and connectable infrastructure.
 
-### Init Submodules
+> ✨ Build your own autonomous AI-first organization — or enhance your existing one.
 
-The repo consists of submodules. Clone them with:
+While still in active development, HyperAgency already includes many of the core components required to experiment with **autonomous system coordination**.
+
+📘 See the [Docs](https://docs.hyag.org) for full capabilities, architecture, and usage examples.
+
+---
+
+## ⚙️ Installation Guide
+
+> You can **self-host HyperAgency locally** in just a few steps —
+> or skip the setup entirely and **use our cloud environment** for a faster start.
+
+### 🧰 Prerequisites (for local setup)
+
+To run HyperAgency locally, install the following:
+
+* [Docker](https://www.docker.com/)
+
+---
+
+### ☁️ Prefer Not to Self-Host?
+
+If you don’t want to manage infrastructure yourself, you can request access to our hosted **HyperAgency Cloud**, where everything is pre-configured and ready to use.
+
+👉 [Get Cloud Access](https://hyag.org/signup)
+
+> The cloud environment is perfect for early testing, team collaboration, or demoing agentic flows without running Docker or Vault locally.
+
+
+---
+
+### 📦 1. Clone the Repository with Submodules
 
 ```bash
+git clone git@github.com:vuics/hyag.git
+cd hyag
 git submodule update --init --recursive
 ```
 
-### Setup Local DNS
+---
+
+### 🌐 2. Configure Local DNS
+
+Set up `/etc/hosts` entries:
 
 ```bash
 export $(xargs < .env) && \
 sudo tee -a /etc/hosts << EOF
 
-# Hyper-Agency
-# db, messaging, models, dependencies
+# HyperAgency Local Services
 127.0.0.1 ${DOMAIN}
 127.0.0.1 mongo.${DOMAIN}
 127.0.0.1 redis.${DOMAIN}
@@ -53,26 +84,24 @@ sudo tee -a /etc/hosts << EOF
 127.0.0.1 ollama.${DOMAIN}
 127.0.0.1 selfdev-speech.${DOMAIN}
 127.0.0.1 selfdev-avatar.${DOMAIN}
-# main
 127.0.0.1 selfdev-api.${DOMAIN}
 127.0.0.1 selfdev-web.${DOMAIN}
-# docs
 127.0.0.1 docs.${DOMAIN}
 
 EOF
 ```
+---
 
-#### Setup DNS for S2S (Optionally)
+### 🤝 Optional: Setup DNS for Multi-Node Communication
 
-Setup DNS on both machines for server-2-server communication:
+To enable server-to-server messaging between multiple HyperAgency instances:
 
-On `dev.local` machine:
 ```bash
-export $(xargs < .env) && \
-export IP=$(ping -c 1 ${REMOTE_DOMAIN} | awk -F '[()]' '/PING/ { print $2 }') && \
+export $(xargs < .env)
+export IP=$(ping -c 1 ${REMOTE_DOMAIN} | awk -F '[()]' '/PING/ { print $2 }')
 sudo tee -a /etc/hosts << EOF
 
-# For server-to-server comminucation to another HyperArgency & Prosody XMMP
+# Remote HyperAgency Node
 ${IP} ${REMOTE_DOMAIN}
 ${IP} selfdev-api.${REMOTE_DOMAIN}
 ${IP} selfdev-web.${REMOTE_DOMAIN}
@@ -83,121 +112,141 @@ ${IP} conference.selfdev-prosody.${REMOTE_DOMAIN}
 EOF
 ```
 
-### Configure Env Vars
+---
 
-Create [./env](./.env) file with `DOMAIN` and `REMOTE_DOMAIN` (optional) env vars. You can see [env.example](./env.example) as an example. There are also examples of those .env files in [./selfdev-api/env.example](./selfdev-api/env.example) and [./selfdev-agency/env.example](./selfdev-agency/env.example). 
+### ⚙️ 3. Configure `.env` Files
 
-You can copy these .env files from the templates:
+Copy and customize `.env` files for the main platform and submodules:
+
 ```bash
 cp env.example .env
 cp selfdev-api/env.example selfdev-api/.env
 cp selfdev-agency/env.example selfdev-agency/.env
 ```
 
-Edit the .env files to configure your instance and services correctly. You also need to set the keys as environment variables in the files below:
+Edit the `.env` files to define:
 
-- .env
-- ./selfdev-api/.env
-- ./selfdev-agency/.env
+* `DOMAIN`
+* `REMOTE_DOMAIN` (optional)
+* `VAULT_TOKEN`, `VAULT_UNSEAL_KEYS` (after vault init)
+* Keys and service-specific values for each component.
 
-### Generate Certificates
+---
 
-Generate certificates for local development:
+### 🔐 4. Generate TLS Certificates (Local Dev)
 
 ```bash
 ./gen-certs.sh
 ```
 
-After you generated certificates, add them on Keychain Access tool by clicking on the certificate files in the [./certs/](./certs/) directory. It is a standard system tool on MacOS.
+On macOS, double-click each `.crt` file in `./certs/` to trust them in **Keychain Access**.
 
-### Run the Tech Stack
+---
 
-Run the whole stack using docker-compose with profiles:
+### 🧱 5. Start the Stack
+
+Use Docker Compose to start all services:
 
 ```bash
 docker-compose up
 ```
 
-Profiles:
-• `main` - web app, backend API server.
-• `prosody` - XMPP messaging backend.
-• `agents` runs agents.
-• `docs` runs containers that show documents.
-• `postgres` runs PostgreSQL.
-• `ollama` runs Ollama.
-• `chroma` runs Chroma.
-• `vault` runs Vault.
+> The `COMPOSE_PROFILES` env var defines the sepecific set of services to run.
+> 🧪 Alternatively, you can use `--profile <name>` to run a specific set of services.
 
-Some profiles may inlcude services from other profiles.
+**Available profiles:**
 
-See the full list of `profiles` in the [./docker-compose.yml](./docker-compose.yml).
+| Profile    | Purpose                        |
+| ---------- | ------------------------------ |
+| `main`     | Frontend (web) + backend (API) |
+| `prosody`  | XMPP messaging infrastructure  |
+| `agents`   | Agent orchestration            |
+| `docs`     | Run documentation interface    |
+| `postgres` | PostgreSQL database            |
+| `vault`    | Secrets manager (Vault)        |
+| `ollama`   | Ollama LLM service             |
+| `chroma`   | Chroma vector DB               |
 
-### Initialize Vault
+📜 Full list in [`docker-compose.yml`](./docker-compose.yml)
 
-After you started the stack in docker-compose, you need to initialize the vault.
+---
+
+### 🔑 6. Initialize Vault
 
 ```bash
 export VAULT_ADDR='http://127.0.0.1:8200'
-
 vault operator init -key-shares=5 -key-threshold=3
+```
 
-# Output of `vault operator init -key-shares=1 -key-threshold=1` command:
-#
-# Unseal Key 1: <key1>
-# Unseal Key 2: <key2>
-# Unseal Key 3: <key3>
-# Unseal Key 4: <key4>
-# Unseal Key 5: <key5>
-#
-# Initial Root Token: <root-token>
+Then **unseal Vault**:
 
-# Run it 3 times with 3 unsealed tokens
+```bash
 vault operator unseal
-# <key1>
-vault operator unseal
-# <key2>
-vault operator unseal
-# <key3>
+# Repeat 3x with 3 unique keys
+```
 
-# Check that the Sealed: false
+Check Vault is unsealed:
+
+```bash
 vault status
+```
 
-# Replace with your actual token
-export VAULT_TOKEN='<root-token>'
+Login:
 
+```bash
+export VAULT_TOKEN='<your-root-token>'
 vault login $VAULT_TOKEN
+```
 
-vault secrets list -detailed
-# if no secret/ path, input:
+Enable secret storage:
+
+```bash
 vault secrets enable -path=secret kv-v2
 ```
 
-Update `VAULT_TOKEN` and `VAULT_UNSEAL_KEYS` values in `.env` files:
-- ./selfdev-api/.env
-- ./selfdev-agency/.env
+Then update:
 
-Restart the stack with `docker compose`.
+* `.env`
+* `selfdev-api/.env`
+* `selfdev-agency/.env`
 
-### Open
+> 💡 Restart Docker after setting Vault secrets.
 
-Below, replace `dev.local` with your `${DOMAIN}`.
+---
 
-Open the following URLs in the browser:
+### 🌐 7. Open in Browser
 
-* [Selfdev-web app](http://selfdev-web.dev.local:3690/)
+Replace `dev.local` with your `${DOMAIN}`.
 
-Depending on the settings, you may need to open the same apps through HTTPS:
+| App           | URL                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------ |
+| Web Interface | [https://selfdev-web.dev.local:3690](https://selfdev-web.dev.local:3690)                               |
+| API Backend   | [https://selfdev-api.dev.local:6369](https://selfdev-api.dev.local:6369)                               |
 
-* [Open selfdev-web app through HTTPS](https://selfdev-web.dev.local:3690/)
-* [Open selfdev-api once to allow using insecure self-signed certificate](https://selfdev-api.dev.local:6369)
-* [Open selfdev-prosody once to allow using insecure self-signed certificate](https://selfdev-prosody.dev.local:5281/conversejs/)
+> 🛡️ You may need to accept self-signed certificates the first time you visit.
 
-### Stop
+---
+
+### 🛑 Stop the Stack
 
 ```bash
 docker-compose down
 ```
 
-## Acknoledgements
+---
 
-I acknoledge the ideological contribution, influcence and feedback given by Hal Casteel and William McKinley. Big thanks for the inspiration.
+## 🙏 Acknowledgements
+
+Special thanks to **Hal Casteel** and **William McKinley** for their early ideas, feedback, and contributions. Their insights into intelligent systems and automation inspired much of what became HyperAgency.
+
+---
+
+## 🎯 Conclusion
+
+**HyperAgency is an evolving framework for building agentic, autonomous systems — and eventually, fully autonomous software companies.**
+
+It already offers powerful capabilities for orchestrating agents, coordinating distributed systems, and integrating LLMs and humans in real-time workflows. By joining early, you can contribute to defining what autonomous organizations of the future look like.
+
+> 🔍 Explore. 🤝 Collaborate. 🚀 Build.
+> Start building your own **agentic stack** with [HyperAgency](https://hyag.org/) today.
+
