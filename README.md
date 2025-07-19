@@ -12,14 +12,14 @@ We envision a future where software companies can operate with minimal human int
 
 With HyperAgency, you can:
 
-✅ **Create, deploy, and manage agents** — quickly iterate and improve.
-💬 **Communicate across agents and humans** — all in one unified interface.
-🧩 **Assemble smart, collaborative AI-human teams** — for coding, design, planning, or operations.
-🗺️ **Coordinate visually** — with an intuitive Map view.
-🧪 **Use an interactive playground** — test flows step-by-step in real time.
-🔀 **Orchestrate conversations** — with multi-agent dialog and memory.
-🔐 **Stay in control** — enterprise-ready with secure APIs, self-hosting, and customizable source code.
-🌍 **Scale across distributed nodes** — federated and connectable infrastructure.
+* ✅ **Create, deploy, and manage agents** — quickly iterate and improve.
+* 💬 **Communicate across agents and humans** — all in one unified interface.
+* 🧩 **Assemble smart, collaborative AI-human teams** — for coding, design, planning, or operations.
+* 🗺️ **Coordinate visually** — with an intuitive Map view.
+* 🧪 **Use an interactive playground** — test flows step-by-step in real time.
+* 🔀 **Orchestrate conversations** — with multi-agent dialog and memory.
+* 🔐 **Stay in control** — enterprise-ready with secure APIs, self-hosting, and customizable source code.
+* 🌍 **Scale across distributed nodes** — federated and connectable infrastructure.
 
 > ✨ Build your own autonomous AI-first organization — or enhance your existing one.
 
