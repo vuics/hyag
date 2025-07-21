@@ -1,5 +1,7 @@
 # 🐙 HyperAgency (HyAg)
 
+![HyperAgency Text Logo](./hyperagency.png)
+
 [**HyperAgency**](https://hyag.org/) is an **open-source agentic AI platform** for building, orchestrating, and deploying collaborative systems of AI agents and humans.
 
 We envision a future where software companies can operate with minimal human intervention — composed of agents that code, plan, manage, and evolve. HyperAgency provides the **framework and infrastructure** to explore and build toward that future.
@@ -219,10 +221,10 @@ Then update:
 
 Replace `dev.local` with your `${DOMAIN}`.
 
-| App           | URL                                                                                                    |
-| ------------- | ------------------------------------------------------------------------------------------------------ |
-| Web Interface | [https://selfdev-web.dev.local:3690](https://selfdev-web.dev.local:3690)                               |
-| API Backend   | [https://selfdev-api.dev.local:6369](https://selfdev-api.dev.local:6369)                               |
+| App           | URL                                                                       |
+| ------------- | ------------------------------------------------------------------------- |
+| Web Interface | [https://selfdev-web.dev.local:3690](https://selfdev-web.dev.local:3690)  |
+| API Backend   | [https://selfdev-api.dev.local:6369](https://selfdev-api.dev.local:6369)  |
 
 > 🛡️ You may need to accept self-signed certificates the first time you visit.
 
@@ -236,12 +238,6 @@ docker-compose down
 
 ---
 
-## 🙏 Acknowledgements
-
-Special thanks to **Hal Casteel** and **William McKinley** for their early ideas, feedback, and contributions. Their insights into intelligent systems and automation inspired much of what became HyperAgency.
-
----
-
 ## 🎯 Conclusion
 
 **HyperAgency is an evolving framework for building agentic, autonomous systems — and eventually, fully autonomous software companies.**
@@ -250,4 +246,10 @@ It already offers powerful capabilities for orchestrating agents, coordinating d
 
 > 🔍 Explore. 🤝 Collaborate. 🚀 Build.
 > Start building your own **agentic stack** with [HyperAgency](https://hyag.org/) today.
+
+---
+
+## 🙏 Acknowledgements
+
+Special thanks to **Hal Casteel** and **William McKinley** for their early ideas, feedback, and discussions. Their insights into intelligent systems and automation inspired much of what became [HyperAgency](https://hyag.org/).
 
