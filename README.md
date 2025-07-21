@@ -158,6 +158,7 @@ docker-compose up
 
 | Profile    | Purpose                        |
 | ---------- | ------------------------------ |
+| `all`      | All services                   |
 | `main`     | Frontend (web) + backend (API) |
 | `prosody`  | XMPP messaging infrastructure  |
 | `agents`   | Agent orchestration            |
