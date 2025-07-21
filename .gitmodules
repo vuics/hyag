@@ -19,3 +19,6 @@
 [submodule "selfdev-avatar"]
 	path = selfdev-avatar
 	url = git@github.com:vuics/selfdev-avatar.git
+[submodule "selfdev-js"]
+	path = selfdev-js
+	url = git@github.com:vuics/selfdev-js.git
