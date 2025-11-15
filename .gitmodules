@@ -1,0 +1,27 @@
+[submodule "selfdev-web"]
+	path = selfdev-web
+	url = git@github.com:vuics/selfdev-web.git
+[submodule "selfdev-api"]
+	path = selfdev-api
+	url = git@github.com:vuics/selfdev-api.git
+[submodule "selfdev-prosody"]
+	path = selfdev-prosody
+	url = git@github.com:vuics/selfdev-prosody.git
+[submodule "selfdev-agency"]
+	path = selfdev-agency
+	url = git@github.com:vuics/selfdev-agency.git
+[submodule "selfdev-docs"]
+	path = selfdev-docs
+	url = git@github.com:vuics/selfdev-docs.git
+[submodule "selfdev-speech"]
+	path = selfdev-speech
+	url = git@github.com:vuics/selfdev-speech.git
+[submodule "selfdev-avatar"]
+	path = selfdev-avatar
+	url = git@github.com:vuics/selfdev-avatar.git
+[submodule "selfdev-js"]
+	path = selfdev-js
+	url = git@github.com:vuics/selfdev-js.git
+[submodule "selfdev-py"]
+	path = selfdev-py
+	url = git@github.com:vuics/selfdev-py.git

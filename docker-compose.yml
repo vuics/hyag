@@ -1,0 +1,342 @@
+# HyperAgency (HyAg) Docker-compose Stack
+
+version: '3.9'
+
+services:
+
+  mongo:
+    profiles: [all, main]
+    hostname: mongo.${DOMAIN}
+    image: mongo:8.0.11-noble
+    ports:
+    - 27017:27017
+    volumes:
+    - mongo-volume:/data/db
+
+  redis:
+    profiles: [all, main]
+    hostname: redis.${DOMAIN}
+    image: redis:6-alpine
+    command: redis-server --appendonly yes
+    ports:
+    - 6379:6379
+    volumes:
+    - redis-volume:/data
+    stop_grace_period: 30s
+
+  vault:
+    profiles: [all, vault, main, agents]
+    hostname: vault.${DOMAIN}
+    image: hashicorp/vault:1.13.3
+    command: vault server -config=/vault/config/config.hcl
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - 8200:8200
+      - 8201:8201
+    volumes:
+      - vault-volume:/vault/file
+      - ./config/vault/config.hcl:/vault/config/config.hcl
+
+  chroma:
+    profiles: [all, agents, chroma]
+    hostname: chroma.${DOMAIN}
+    image: chromadb/chroma:1.0.15
+    ports:
+    - 8121:8121
+    environment:
+    - CHROMA_PERSIST_DIRECTORY=/chroma/data
+    - CHROMA_HOST_PORT=8121
+    volumes:
+    - chroma-volume:/chroma/chroma
+
+  postgres:
+    profiles: [all, postgres, agents, prosody]
+    hostname: postgres.${DOMAIN}
+    image: postgres:17.4
+    restart: always
+    shm_size: 128mb
+    environment:
+    - POSTGRES_DB=postgres_prosody
+    - POSTGRES_PASSWORD=postgres_secret_123
+    - POSTGRES_USER=postgres_user
+    volumes:
+    - postgres-volume:/var/lib/postgresql/data
+
+  ollama:
+    profiles: [all, ollama]
+    hostname: ollama.${DOMAIN}
+    image: ollama/ollama:0.5.7
+    ports:
+    - 11436:11436
+    environment:
+    - OLLAMA_HOST=0.0.0.0:11436
+    volumes:
+    - ~/.ollama:/root/.ollama
+
+  selfdev-prosody:
+    profiles: [all, agents, prosody]
+    hostname: selfdev-prosody.${DOMAIN}
+    image: selfdev-prosody:v0.0.1
+    build:
+      context: ./selfdev-prosody/
+    restart: unless-stopped
+    ports:
+    - 5001:5000
+    - 5222:5222
+    - 5269:5269
+    - 5280:5280
+    - 5281:5281
+    - 5347:5347
+    - 8387:8387
+    links:
+    - dockerhost
+    environment:
+    - HOST=selfdev-prosody.${DOMAIN}
+    - MUC_HOST=conference.selfdev-prosody.${DOMAIN}
+    - SHARE_HOST=share.selfdev-prosody.${DOMAIN}
+    - TURN_HOST=eturnal.${DOMAIN}
+    - ADMINS=
+    - S2S_INSECURE_DOMAINS=selfdev-prosody.${REMOTE_DOMAIN}
+    - S2S_SECURE_DOMAINS=
+    - STORAGE=sql
+    - SQL_DRIVER=PostgreSQL
+    - SQL_DATABASE=postgres_prosody
+    - SQL_USER=postgres_user
+    - SQL_PASSWORD=postgres_secret_123
+    - SQL_HOST=postgres.${DOMAIN}
+    volumes:
+    - ./selfdev-prosody/prosody.cfg.lua:/etc/prosody/prosody.cfg.lua
+    - ./selfdev-prosody/commander.sh:/commander.sh
+    - ./certs/selfdev-prosody.${DOMAIN}/tls.key:/etc/prosody/certs/selfdev-prosody.${DOMAIN}.key
+    - ./certs/selfdev-prosody.${DOMAIN}/tls.crt:/etc/prosody/certs/selfdev-prosody.${DOMAIN}.crt
+    - ./certs/conference.selfdev-prosody.${DOMAIN}/tls.key:/etc/prosody/certs/conference.selfdev-prosody.${DOMAIN}.key
+    - ./certs/conference.selfdev-prosody.${DOMAIN}/tls.crt:/etc/prosody/certs/conference.selfdev-prosody.${DOMAIN}.crt
+    - ./certs/share.selfdev-prosody.${DOMAIN}/tls.key:/etc/prosody/certs/share.selfdev-prosody.${DOMAIN}.key
+    - ./certs/share.selfdev-prosody.${DOMAIN}/tls.crt:/etc/prosody/certs/share.selfdev-prosody.${DOMAIN}.crt
+
+  # NOTE: The "dockerhost" container is for giving access from docker
+  #       to services launched on the localhost system
+  #
+  dockerhost:
+    hostname: dockerhost.${DOMAIN}
+    image: qoomon/docker-host:3.3.2
+    deploy:
+      restart_policy:
+        condition: on-failure
+    cap_add:
+    - NET_ADMIN
+    - NET_RAW
+
+  selfdev-api:
+    profiles: [all, main]
+    hostname: selfdev-api.${DOMAIN}
+    build:
+      context: ./selfdev-api/
+    image: selfdev-api:v1.0.0
+    ports:
+    - 6369:6369
+    links:
+    - dockerhost
+    depends_on:
+      - mongo
+      - vault
+    env_file:
+    - ./selfdev-api/.env
+    environment:
+    - SSL_ENABLE=true
+    - DB_URL=mongodb://mongo.${DOMAIN}:27017/selfdev
+    - ARANGODB_ENABLE=0
+    - ARANGODB_URL=http://arangodb.${DOMAIN}:8529
+    - ARANGODB_DATABASE=selfdev
+    - AGENCY_URL=http://selfdev-agency.${DOMAIN}:6600/v1
+    - WEB_APP_ORIGIN=http://selfdev-web.${DOMAIN}:3690
+    - CORS_WHITELIST=http://selfdev-web.${DOMAIN}:3690,https://selfdev-web.${DOMAIN}:3690,http://localhost:8081,http://selfdev-mobile.${DOMAIN}:8127
+    - XMPP_HOST=selfdev-prosody.${DOMAIN}
+    - XMPP_COMMANDER_URL=http://selfdev-prosody.${DOMAIN}:8387
+    - VAULT_ENABLE=true
+    - VAULT_ADDR=http://vault.${DOMAIN}:8200
+    - VAULT_UNSEAL=true
+    - LIMITS_ENABLE=false
+    volumes:
+    - ./selfdev-api/src:/opt/app/src
+    - ./certs/selfdev-api.${DOMAIN}/tls.key:/opt/ssl/tls.key
+    - ./certs/selfdev-api.${DOMAIN}/tls.crt:/opt/ssl/tls.crt
+
+  selfdev-web:
+    profiles: [all, main]
+    hostname: selfdev-web.${DOMAIN}
+    image: selfdev-web:v1.0.0
+    build:
+      context: ./selfdev-web/
+    command: npm start
+    ports:
+    - 3690:3690
+    links:
+    - dockerhost
+    environment:
+    - PORT=3690
+    - HTTPS=true
+    - ALLOWED_HOSTS=selfdev-web.${DOMAIN}
+    - SSL_KEY_FILE=/opt/ssl/tls.key
+    - SSL_CRT_FILE=/opt/ssl/tls.crt
+    - VITE_API_URL=https://selfdev-api.${DOMAIN}:6369/v1
+    - VITE_SYNTHETIC_COMPONENTS={"talk":{},"meet":{},"hive":{},"flow":{"url":"http://${DOMAIN}:7860/"},"node":{"url":"http://${DOMAIN}:1880/"},"docs":{"url":"http://docs.${DOMAIN}:9188"}}
+    - VITE_CHAT_ENABLE=true
+    - VITE_MAP_ENABLE=true
+    - VITE_HIVE_ENABLE=true
+    - VITE_DOCS_ENABLE=true
+    - VITE_DOCS_URL=http://docs.${DOMAIN}:9298
+    - VITE_XMPP_HOST=selfdev-prosody.${DOMAIN}
+    - VITE_XMPP_WEBSOCKET_URL=wss://selfdev-prosody.${DOMAIN}:5281/xmpp-websocket
+    - VITE_XMPP_MUC_HOST=conference.selfdev-prosody.${DOMAIN}
+    - VITE_XMPP_SHARE_HOST=share.selfdev-prosody.${DOMAIN}
+    - VITE_SHARE_URL_PREFIX=https://selfdev-prosody.dev.local:5281/file_share/
+    volumes:
+    - ./selfdev-web/src:/opt/app/src
+    - ./selfdev-web/public:/opt/app/public
+    - ./selfdev-web/vite.config.js:/opt/app/vite.config.js
+    - ./certs/selfdev-web.${DOMAIN}/tls.key:/opt/ssl/tls.key
+    - ./certs/selfdev-web.${DOMAIN}/tls.crt:/opt/ssl/tls.crt
+
+  selfdev-agents:
+    profiles: [all, agents]
+    image: selfdev-agency:v1.0.0
+    build:
+      context: ./selfdev-agency/
+    command: nodemon --exec python src/agents.py
+    links:
+    - dockerhost
+    depends_on:
+      - mongo
+      - redis
+      - vault
+      - selfdev-prosody
+    environment:
+    - CONTAINER_ID=selfdev-agents
+    - ALLOW_INSECURE=True
+    - DB_URL=mongodb://mongo.${DOMAIN}:27017/selfdev
+    - XMPP_HOST=selfdev-prosody.${DOMAIN}
+    - XMPP_CONNECT_HOST=selfdev-prosody.${DOMAIN}
+    - XMPP_MUC_HOST=conference.selfdev-prosody.${DOMAIN}
+    - XMPP_COMMANDER_URL=http://selfdev-prosody.${DOMAIN}:8387
+    - REDIS_URL=redis://redis.${DOMAIN}:6379/1
+    - OLLAMA_BASE_URL=http://ollama.${DOMAIN}:11436
+    - LANGFLOW_URL=http://selfdev-langflow:7860
+    - NODERED_URL=http://selfdev-nodered:1880
+    - VAULT_ENABLE=true
+    - VAULT_ADDR=http://vault.${DOMAIN}:8200
+    - VAULT_UNSEAL=true
+    - CHROMA_HOST=chroma.${DOMAIN}
+    - CHROMA_PORT=8121
+    - SHARE_URL_PREFIX=https://selfdev-prosody.${DOMAIN}:5281/file_share/
+    - XMPP_SHARE_HOST=share.selfdev-prosody.${DOMAIN}
+    - SSL_VERIFY=false
+    - SPEACHES_BASE_URL=http://selfdev-speech.${DOMAIN}:8372/v1
+    - AVATAR_URL=http://selfdev-avatar.${DOMAIN}:8533
+    env_file:
+    - ./selfdev-agency/.env
+    volumes:
+    - ./selfdev-agency/src/:/opt/app/src/
+    - ./selfdev-agency/credentials.json:/opt/app/credentials.json
+    - ./selfdev-agency/token.json:/opt/app/token.json
+    - ./selfdev-agency/token.pickle:/opt/app/token.pickle
+    stop_grace_period: 25s
+
+  selfdev-docs:
+    profiles: [all, docs]
+    hostname: docs.${DOMAIN}
+    image: selfdev-docs:v1.0.0
+    build:
+      context: ./selfdev-docs/
+    command: npm start
+    ports:
+      - 9298:9298
+    environment:
+      - PORT=9298
+    volumes:
+      - ./selfdev-docs/docs/:/opt/app/docs/
+      - ./selfdev-docs/src/:/opt/app/src/
+      - ./selfdev-docs/static/:/opt/app/static/
+      - ./selfdev-docs/blog/:/opt/app/blog/
+      - ./selfdev-docs/i18n/:/opt/app/i18n/
+
+  selfdev-langflow:
+    # hostname: langflow.${DOMAIN}
+    profiles: [all, flow, langflow]
+    image: langflowai/langflow:1.3.4
+    pull_policy: always
+    ports:
+      - 7860:7860
+    depends_on:
+      - selfdev-langflowdb
+    environment:
+      - LANGFLOW_DATABASE_URL=postgresql://langflow:langflow@selfdev-langflowdb:5432/langflow
+      - LANGFLOW_CONFIG_DIR=app/langflow
+      - DO_NOT_TRACK=true
+    volumes:
+      - langflow-volume:/app/langflow
+
+  selfdev-langflowdb:
+    profiles: [all, flow, langflow]
+    image: postgres:16
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: langflow
+      POSTGRES_PASSWORD: langflow
+      POSTGRES_DB: langflow
+    volumes:
+      - langflowdb-volume:/var/lib/postgresql/data
+
+  selfdev-nodered:
+    profiles: [all, node, nodered]
+    image: nodered/node-red:4.0.9-22
+    environment:
+      - TZ=Europe/Amsterdam
+    ports:
+      - 1880:1880
+    volumes:
+      - ./selfdev-hub/nodered/node-red-data:/data
+
+  selfdev-speech:
+    profiles: [all, speech, agents, agents_stt, agents_tts]
+    hostname: selfdev-speech.${DOMAIN}
+    image: selfdev-speech:v0.0.1
+    build:
+      context: ./selfdev-speech/
+    restart: unless-stopped
+    ports:
+      - 8372:8372
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://0.0.0.0:8372/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    volumes:
+      - speech-volume:/home/ubuntu/.cache/huggingface/hub
+
+  selfdev-avatar:
+    profiles: [all, avatar, agents_avatar]
+    hostname: selfdev-avatar.${DOMAIN}
+    image: selfdev-avatar:v0.0.1
+    build:
+      context: ./selfdev-avatar/
+    restart: unless-stopped
+    shm_size: '2gb'
+    ports:
+      - 8533:8533
+    volumes:
+      - ./selfdev-avatar/src:/opt/app/src
+      - ./selfdev-avatar/data:/opt/app/data
+
+volumes:
+  mongo-volume:
+  redis-volume:
+  chroma-volume:
+  postgres-volume:
+  langflow-volume:
+  langflowdb-volume:
+  vault-volume:
+  speech-volume:
