@@ -1,137 +1,87 @@
-# **HyperAgency Contributor License Agreement (CLA)**
+# HyperAgency Contributor License Agreement (CLA)
+**Version 1.1 – Effective Date:** [Insert Date]
 
-**Effective Date:** [Date of signature]
-**Licensor:** Vuics LLC
-**Contributor:** [Name / Organization]
-
----
-
-## **1. Purpose**
-
-This Contributor License Agreement (“CLA”) ensures that all contributions to **HyperAgency Agentic AI OS** (“Work”) are legally usable by **Vuics LLC** for both:
-
-1. **Non-commercial use** under **Apache 2.0**, and
-2. **Commercial use** under Vuics LLC’s proprietary license.
-
-This protects the intellectual property of Vuics LLC and ensures consistent licensing for all users.
+**Licensor:** Vuics LLC  
+**Contributor:** [Name / Organization]  
 
 ---
 
-## **2. Definitions**
+## 1. Purpose
 
-* **Contribution:** Any work of authorship, including code, documentation, designs, or other materials submitted to the Work.
-* **Work:** HyperAgency Agentic AI OS, including all versions, modules, and derivative works.
-* **Licensor:** Vuics LLC, the copyright holder of HyperAgency.
+This CLA ensures that all contributions to **HyperAgency Agentic AI OS** (“Work”) are legally usable by **Vuics LLC** under the platform’s triple-license model:
+
+1. Apache 2.0 NC – for personal, academic, and non-commercial use.  
+2. AGPL-3.0 – for commercial open-source projects.  
+3. Commercial License – for closed-source commercial use by enterprises.  
+
+This protects Vuics LLC’s IP while allowing contributors to participate safely.
+
+---
+
+## 2. Definitions
+
+* **Contribution:** Any work of authorship, including code, documentation, designs, or other materials submitted to the Work.  
+* **Work:** HyperAgency Agentic AI OS, including all modules, submodules, and derivative works.  
+* **Licensor:** Vuics LLC, copyright holder.  
 * **Contributor:** Individual or entity submitting a Contribution.
 
 ---
 
-## **3. Grant of Rights**
+## 3. Grant of Rights
 
-The Contributor hereby grants Vuics LLC the following rights for each Contribution:
+The Contributor grants Vuics LLC:
 
-1. **Perpetual** – rights continue indefinitely.
+1. **Perpetual, worldwide, royalty-free, non-exclusive license** to:  
+   - Use, reproduce, modify, distribute, publicly display, and publicly perform the Contribution.  
+   - Sublicense or relicense the Contribution under any current or future license of Vuics LLC (Apache 2.0 NC, AGPL-3.0, or commercial).  
+   - Integrate or repackage the Contribution in current or future products, services, or platform versions.  
 
-2. **Worldwide** – rights valid in all countries.
+2. **Patent rights:** Contributor grants a royalty-free, worldwide, non-exclusive license to any patents contained in the Contribution in connection with the Work.  
 
-3. **Royalty-Free** – no payment or fees required.
-
-4. **License Scope:**
-
-   * To use, reproduce, modify, prepare derivative works of, distribute, publicly display, and publicly perform the Contribution.
-   * To sublicense or relicense the Contribution under both:
-
-     * Apache License 2.0 (for non-commercial use)
-     * Vuics LLC commercial license (for enterprise / profit use)
-   * To repackage or integrate Contribution in current or future products or services.
-
-5. **Patent Rights:**
-
-   * Contributor grants a non-exclusive, worldwide, royalty-free license to use any patents contained in the Contribution in connection with the Work.
-
-6. **Moral Rights Waiver:**
-
-   * Contributor waives any moral rights to the Contribution to the extent permitted by law.
-
-7. **Rights to Sub-License / Re-license:**
-
-   * Contributor grants Vuics LLC the right to relicense, sublicense, or redistribute the Contribution, in whole or in part, under any current or future license Vuics LLC chooses, including proprietary commercial licenses.
-
-8. Right to Enforce / Use in Enforcement
-
-   * Contributor acknowledges that Vuics LLC may enforce its rights in the Work, including the Contribution, and Contributor will cooperate if necessary.
-
-9. Copyright Assignment
-
-   * Contributor agrees that copyright in their Contribution may be assigned to Vuics LLC at Vuics LLC's discretion. This assignment is optional and only applies if Vuics LLC chooses to exercise it for legal or commercial purposes.
+3. **Moral rights:** Contributor waives any moral rights to the Contribution to the maximum extent allowed by law.
 
 ---
 
-## **4. Representations and Warranties**
+## 4. Representations and Warranties
 
-The Contributor represents that:
+Contributor represents and warrants that:
 
-1. They have the right to make this contribution and grant the above rights.
-2. The Contribution is original or otherwise appropriately licensed for submission.
-3. The Contribution does not infringe the rights of any third party.
-
----
-
-## **5. No Additional Restrictions**
-
-The Contributor agrees not to apply any legal terms or technological measures that would restrict Vuics LLC’s or any downstream user’s rights granted in this CLA.
+1. They have the legal right to submit the Contribution.  
+2. The Contribution is original or properly licensed for submission.  
+3. The Contribution does not violate the rights of any third party.
 
 ---
 
-## **6. Copyright Assignment (Optional Clause)**
+## 5. No Additional Restrictions
 
-If desired, the Contributor may agree to **assign copyright to Vuics LLC** in whole or in part.
-
-> Most contributors will use the license CLA above; copyright assignment is optional and can be added for key contributors.
+Contributor agrees not to apply any license, covenant, or technological measure that would limit Vuics LLC’s or downstream users’ rights under this CLA.
 
 ---
 
-## **7. Miscellaneous**
+## 6. Copyright Assignment (Optional)
 
-1. This CLA is **governed by the laws of [State/Country]**.
-2. This CLA may be executed electronically via GitHub pull request checks or a CLA signing service.
-3. The Contributor may submit further contributions under the same terms.
+Contributor may optionally assign copyright of the Contribution to Vuics LLC.  
+This is **not required** for normal contributions but may be requested for key modules or bridges.
 
 ---
 
-**Contributor Signature:** ___________________________
-**Name / Organization:** ___________________________
+## 7. Enforcement Cooperation
+
+Contributor agrees to cooperate reasonably with Vuics LLC to enforce its rights in the Work, including submitted Contributions.
+
+---
+
+## 8. Miscellaneous
+
+1. This CLA is governed by the laws of [State/Country].  
+2. CLA may be executed electronically via GitHub pull requests or a CLA signing service.  
+3. Each Contribution is governed by this CLA, even if submitted at different times.
+
+---
+
+**Contributor Signature:** ___________________________  
+**Name / Organization:** ___________________________  
+**Date:** ___________________________  
+
+**Vuics LLC Authorized Representative:** ___________________________  
 **Date:** ___________________________
-
-**Vuics LLC Authorized Representative:** ___________________________
-**Date:** ___________________________
-
----
-
-### ✅ **GitHub Integration Tips**
-
-1. Use **CLA Assistant** or **EasyCLA** to require CLA signing before PRs are merged.
-2. Link this CLA in your `CONTRIBUTING.md`:
-
-```markdown
-## Contributor License Agreement (CLA)
-
-All contributions to HyperAgency require signing the CLA to ensure legal use under:
-
-- Apache 2.0 (non-commercial users)
-- Vuics LLC commercial license (enterprise / SaaS)
-
-Sign here: [CLA Form / GitHub CLA Bot]
-```
-
-3. Add a **license header** in source files referencing the CLA:
-
-```javascript
-/**
- * HyperAgency Agentic AI OS
- * Copyright 2025 Vuics LLC.
- *
- * Contributions are governed by the HyperAgency Contributor License Agreement (CLA).
- */
-```
-
